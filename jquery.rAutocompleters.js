@@ -51,7 +51,7 @@ $.createAutocompleters = function (formId, options) {
                 element.data('selectedId', cache[0].value);
                 setValForHiddenPair(element);
             } else {
-                //if not start another ajax call
+                //if no cache value is present start another ajax call
                 //as this happens async we should set values in success
                 element.addClass('loading');
                 //prevent submits during ajax call
@@ -76,7 +76,7 @@ $.createAutocompleters = function (formId, options) {
                                     type: 'error',
                                     timeout: 5000,
                                     closeWith: ['click'],
-                                    text: 'Data error'
+                                    text: options.notFoundMessage
                                 });
                             }
                         }
