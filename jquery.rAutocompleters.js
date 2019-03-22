@@ -12,8 +12,12 @@
 * You can change cache name and have baseUrl set
 *
 * $.createAutocompleters('FormId',
-*   {cacheName : 'MyApplicationName', baseUrl : 'https://example.com/'}
-*   );
+*   {
+        cacheName : 'MyApplicationName',
+        baseUrl : 'https://example.com/',
+        notFoundMessage : 'No results'
+    }
+* );
 *
 * */
 
@@ -22,14 +26,14 @@ $.rAutocompleteCacheName = 'rAutocompleteCache';
 $.createAutocompleters = function (formId, options) {
     options = $.extend({
         cacheName : $.rAutocompleteCacheName,
-        baseUrl : ''
+        baseUrl: '',
+        notFoundMessage : 'Nothing found'
     }, options);
 
     function setValForHiddenPair(element) {
         var elementId = element.attr('id').replace('ac-', '');
         if (element.data('selectedId')) {
             $('#' + elementId).val(element.data('selectedId'));
-            element.removeClass('callout alert');
         }
     }
 
@@ -111,7 +115,8 @@ $.createAutocompleters = function (formId, options) {
             $.autocompletefactory(
                 {
                     url : options.baseUrl + $(this).data('ac'),
-                    cacheName : options.cacheName
+                    cacheName : options.cacheName,
+                    notFoundMessage : options.notFoundMessage
                 }
             )
         );
@@ -183,7 +188,7 @@ $.autocompletefactory = function (options) {
         source : function (request, response) {    //the data to use
             var key = settings.url + '/' + request.term;
             var dataResp;
-            if(key in $.localStorage(settings.cacheName) ) {        //if the query is already in the cache
+            if (key in $.localStorage(settings.cacheName) ) {        //if the query is already in the cache
                 dataResp = $.localStorage(settings.cacheName)[key];
             } else {
                 $.ajax(
@@ -204,7 +209,7 @@ $.autocompletefactory = function (options) {
             }
             if (dataResp.length == 0) {
                 response({
-                    label : 'Hiba: nincs talรฝlat!',
+                    label : options.notFoundMessage,
                     value : -1
                 });
                 return false;
