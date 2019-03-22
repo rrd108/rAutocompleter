@@ -1,13 +1,15 @@
 /*
 * if the input has data-ac="url/for/search" attribute in the given form
 *
-* creates an copy of the input what will be an autocompleter,
+* creates a copy of the input what will be an autocompleter,
 * and makes the original input hidden
 *
 * the original input will receive the selected items id from the
 * autocompleters dropdown
 *
 * $.createAutocompleters('FormId'); shold be called
+*
+* You can change cache name and have baseUrl set
 *
 * $.createAutocompleters('FormId',
 *   {cacheName : 'MyApplicationName', baseUrl : 'https://example.com/'}
@@ -117,20 +119,20 @@ $.createAutocompleters = function (formId, options) {
         $(this).blur(blurHandler);
     });
 
-    $('body').append('<div id="dialog"></div>');
-    $('#dialog').dialog(
+    $('body').append('<div id="rAutocompleterDialog"></div>');
+    $('#rAutocompleterDialog').dialog(
         {
             autoOpen : false,
             width : 500
         }
     );
 
-    $('#dialog').on('click', function (event) {
+    $('#rAutocompleterDialog').on('click', function (event) {
         var acId = $(event.target).data('target');
         var inputId = acId.replace('ac-', '');
         $('#' + acId).val($(event.target).text());
         $('#' + acId).data('selectedId', $(event.target).data('id'));
-        $('#dialog').dialog('close');
+        $('#rAutocompleterDialog').dialog('close');
     });
 };
 
@@ -145,7 +147,6 @@ $.createAutocompleters = function (formId, options) {
  *  { label: "Label 2", value: "radha" }
  * ];
 */
-
 $.autocompletefactory = function (options) {
     var settings = $.extend({
         resultCount : 5,        //this is the limit parameter for cake find all method
@@ -203,7 +204,7 @@ $.autocompletefactory = function (options) {
             }
             if (dataResp.length == 0) {
                 response({
-                    label : 'Hiba: nincs talรกlat!',
+                    label : 'Hiba: nincs talรฝlat!',
                     value : -1
                 });
                 return false;
@@ -249,16 +250,16 @@ $.autocompletefactory = function (options) {
                         input : $(this),
                         success : function (data) {
                             // this.input
-                            $('#dialog').dialog('option', 'title', ui.item.label);
+                            $('#rAutocompleterDialog').dialog('option', 'title', ui.item.label);
                             var inputId = this.input.attr('id');
                             $.each(data, function (index, result) {
-                                $('#dialog').append(
+                                $('#rAutocompleterDialog').append(
                                     '<li data-id="' + result.value + '" data-target="' + inputId + '">'
                                     + result.label
                                     + '</li>'
                                 );
                             });
-                            $('#dialog').dialog('open');
+                            $('#rAutocompleterDialog').dialog('open');
                         }
                     }
                 );
