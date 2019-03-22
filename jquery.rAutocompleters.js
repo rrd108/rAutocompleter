@@ -13,9 +13,10 @@
 *
 * $.createAutocompleters('FormId',
 *   {
-        cacheName : 'MyApplicationName',
-        baseUrl : 'https://example.com/',
-        notFoundMessage : 'No results'
+        cacheName : 'MyApplicationName',    // give the name for the localstorage cache
+        baseUrl : 'https://example.com/',   // base url for the autocompleters
+        notFoundMessage : 'No results',     // display message on no results found
+        onlyExistingValue : true            // only data from the server (or the cache) accepted, other values are rejected
     }
 * );
 *
@@ -27,7 +28,8 @@ $.createAutocompleters = function (formId, options) {
     options = $.extend({
         cacheName : $.rAutocompleteCacheName,
         baseUrl: '',
-        notFoundMessage : 'Nothing found'
+        notFoundMessage: 'Nothing found',
+        onlyExistingValue : true,
     }, options);
 
     function setValForHiddenPair(element) {
@@ -69,15 +71,17 @@ $.createAutocompleters = function (formId, options) {
                                 setValForHiddenPair(element);
                                 $(':input[data-type="submit"]').prop('disabled', false);
                             } else {
-                                element.effect('shake');
-                                element.val('???');
-                                noty({
-                                    layout: 'topRight',
-                                    type: 'error',
-                                    timeout: 5000,
-                                    closeWith: ['click'],
-                                    text: options.notFoundMessage
-                                });
+                                if (options.onlyExistingValue) {
+                                    element.effect('shake');
+                                    element.val('???');
+                                    noty({
+                                        layout: 'topRight',
+                                        type: 'error',
+                                        timeout: 5000,
+                                        closeWith: ['click'],
+                                        text: options.notFoundMessage
+                                    });
+                                }
                             }
                         }
                     }
